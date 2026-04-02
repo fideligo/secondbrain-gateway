@@ -20,7 +20,7 @@ func main() {
 
 	router.GET("/api/health", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H {
-			"message": "SecondBrain Gateaway is running smoothly!",
+			"message": "SecondBrain Gateway is running smoothly!",
 		})
 	})
 

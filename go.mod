@@ -1,4 +1,4 @@
-module github.com/fideligo/secondbrain-gateaway
+module github.com/fideligo/secondbrain-gateway
 
 go 1.25.3
 
