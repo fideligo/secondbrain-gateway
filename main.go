@@ -1,48 +1,91 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"time"
+
+	"github.com/fideligo/secondbrain-gateway/proto"
 
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-type DocumentRequest struct {
+type DocumentRequestJSON struct {
 	FileName string `json:"file_name"`
 	Author string `json:"author"`
 }
 
 func main() {
-
-	router := gin.Default()
+	// setup koneksi gRPC ke python
+	// assumption: python ai runs on port 50051
+	fmt.Println("Connecting to Python AI Engine on port :50051...")
+	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to connect to gRPC server : %v", err)
+	}
+	defer conn.Close()
 	
-	// Health Check (GET)
+	// membuat "service" client dari koneksi di atas
+	brainClient := proto.NewBrainServiceClient(conn)
 
-	router.GET("/api/health", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H {
+	// setup gin router
+	router := gin.Default()
+
+	// Health Check (GET)
+		router.GET("/api/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H {
 			"message": "SecondBrain Gateway is running smoothly!",
 		})
 	})
 
-	// Menerima data JSON (POST)
+	// Upload Endpoint (POST)
+	router.POST("/api/upload", func(c *gin.Context) {
+		var jsonReq DocumentRequestJSON
 
-	router.POST("/api/upload", func(context *gin.Context) {
-		var docReq DocumentRequest
+		// accept model from user
+		if err := c.ShouldBindJSON(&jsonReq); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON format"})
+			return
+		}
 
-		if err := context.ShouldBindJSON(&docReq); err != nil {
-			context.JSON(http.StatusBadRequest, gin.H {
-				"error": "Invalid JSON Format or wrong data type",
+		// bungkus ke dalam model gRPC (brain.pb.go)
+		grpcReq := &proto.DocumentRequest{
+			FileName: jsonReq.FileName,
+			Author: jsonReq.Author,
+			Content: []byte("Ini simulasi isi file PDF berupa bytes"), // later will be replaced with actual file
+		}
+
+		// use gRPC service to send to python (brain_grpc.pb.go)
+		// give it a 5 seconds timeout, if python doesn't respond then cancel the task
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		grpcResponse, err := brainClient.ProcessDocument(ctx, grpcReq)
+		if err != nil {
+			// if python is off or error
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to connect to AI Engine",
+				"details": err.Error(),
 			})
 			return
 		}
 
-		fmt.Printf("New Document!\nFile Name: %s\nWriter: %s\n", docReq.FileName, docReq.Author)
-
-		context.JSON(http.StatusAccepted, gin.H{
-			"message": fmt.Sprintf("The Document %s from %s is accepted", docReq.FileName, docReq.Author),
-			"status":  "Processing",
+		// return response from python to frontend
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Sukses diproses oleh AI Engine!",
+			"ai_response": gin.H{
+				"success": grpcResponse.Success,
+				"message": grpcResponse.Message,
+				"document_id": grpcResponse.DocumentId,
+			},
 		})
+
 	})
+
 
 	fmt.Println("🚀 Gateway starting on port :8080...")
 	router.Run(":8080")

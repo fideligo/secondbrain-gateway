@@ -1,0 +1,34 @@
+// Versi protobuf yang kita gunakan
+syntax = "proto3";
+
+// Nama paket/namespace kontrak ini
+package brain;
+
+// Menentukan lokasi hasil generate kode Go nanti
+option go_package = "./proto";
+
+// ----------------------------------------------------
+// 1. KITA DEFINISIKAN SERVICE-NYA (Ibarat Interface)
+// ----------------------------------------------------
+service BrainService {
+  // Go akan memanggil fungsi ini, mengirim dokumen, lalu Python membalas statusnya
+  rpc ProcessDocument (DocumentRequest) returns (DocumentResponse);
+}
+
+// ----------------------------------------------------
+// 2. KITA DEFINISIKAN BENTUK DATANYA (Ibarat Struct)
+// ----------------------------------------------------
+
+// Data yang dikirim dari Go ke Python
+message DocumentRequest {
+  string file_name = 1;  // Angka 1, 2, 3 ini adalah "Tag" unik, bukan nilai default!
+  string author = 2;
+  bytes content = 3;     // Nanti file fisik PDF-nya dikirim dalam bentuk bytes
+}
+
+// Data balasan dari Python ke Go
+message DocumentResponse {
+  bool success = 1;
+  string message = 2;
+  string document_id = 3;
+}
