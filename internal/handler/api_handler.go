@@ -43,7 +43,7 @@ func (h *APIHandler) UploadDocument(c *gin.Context) {
 
 	// Kasih struk balasan ke pelanggan
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Sukses diproses oleh AI Engine!",
+		"message": "Successfully processed by AI Engine!",
 		"ai_response": gin.H{
 			"success":     resp.Success,
 			"message":     resp.Message,
