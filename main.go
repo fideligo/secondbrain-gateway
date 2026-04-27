@@ -21,6 +21,8 @@ type DocumentRequestJSON struct {
 func main() {
 
 	fmt.Println("⏳ Connecting to Python AI Engine on port :50051...")
+	// localhost:50051 if gemini
+	// http://localhost:11434 if llama
 	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC server : %v", err)
