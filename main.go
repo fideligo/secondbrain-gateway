@@ -7,6 +7,7 @@ import (
 	"github.com/fideligo/secondbrain-gateway/internal/client"
 	"github.com/fideligo/secondbrain-gateway/internal/handler"
 	"github.com/fideligo/secondbrain-gateway/proto"
+	"github.com/fideligo/secondbrain-gateway/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -19,6 +20,8 @@ type DocumentRequestJSON struct {
 }
 
 func main() {
+
+	db := database.InitDB()
 
 	fmt.Println("⏳ Connecting to Python AI Engine on port :50051...")
 	// localhost:50051 if gemini
@@ -33,7 +36,7 @@ func main() {
 	
 	brainClient := client.NewBrainClient(grpcClient) 
 	
-	apiHandler := handler.NewAPIHandler(brainClient) 
+	apiHandler := handler.NewAPIHandler(brainClient, db)
 
 	// 3. BUKA TOKO (Router)
 	router := gin.Default()

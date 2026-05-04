@@ -3,66 +3,104 @@ package handler
 import (
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/fideligo/secondbrain-gateway/internal/client"
+	"github.com/fideligo/secondbrain-gateway/internal/model"
 	"github.com/gin-gonic/gin"
+
+	"gorm.io/gorm"
 )
 
 // API Class
 type APIHandler struct {
 	brainClient *client.BrainClient
+	db			*gorm.DB
 }
 
 // Constructor API
-func NewAPIHandler(brainClient *client.BrainClient) *APIHandler {
+func NewAPIHandler(brainClient *client.BrainClient, db *gorm.DB) *APIHandler {
 	return &APIHandler{
 		brainClient: brainClient,
+		db: db,
 	}
 }
 
 // handle json
 func (h *APIHandler) UploadDocument(c *gin.Context) {
-
-	// catch uploaded file named "document" from form-data
+	// 1. Catch uploaded file from json "document"
 	file, err := c.FormFile("document")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No document file provided in the request"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No document file provided"})
 		return
 	}
 
-	// catch author name
 	author := c.PostForm("author")
 	if author == "" {
 		author = "Anonymous"
 	}
 
-	// open file
-	fileContent, err := file.Open()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file bytes"})
+	// 2. Create filepath and save physical file (currently in backend)
+	uploadDir := "./uploads"
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create directory"})
 		return
 	}
 
-	// read file into raw bytes 
+	// Define the filePath here so it can be used later for DB
+	filePath := filepath.Join(uploadDir, file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save physical file"})
+		return
+	}
+
+	// 3. Read bytes of the file, for gRPC
+	fileContent, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+		return
+	}
+	defer fileContent.Close()
+
 	fileBytes, err := io.ReadAll(fileContent)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file bytes"})
 		return
 	}
 
-	// send file bytes to the AI engine via gRPC
+	// 4. Send to AI
 	response, err := h.brainClient.ProcessDocument(file.Filename, author, fileBytes)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "AI Engine failed to process the document",
+			"error":   "AI Engine failed to process",
 			"details": err.Error(),
 		})
 		return
 	}
 
-	// Return success to the user
+	// 5. Save to PostgreSQL
+	newDoc := model.Document{
+		FileName:   file.Filename,
+		Author:     author,
+		FilePath:   filePath,
+		Summary:    response.Message, 
+		UploadedAt: time.Now(),
+	}
+
+	if result := h.db.Create(&newDoc); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to save to database",
+			"details": result.Error.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Success! Document processed by AI Engine",
+		"message":     "Success! Document processed and saved permanently",
+		"document_id": newDoc.ID,
 		"ai_response": response,
 	})
 }
