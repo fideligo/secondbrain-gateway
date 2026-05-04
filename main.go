@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"github.com/fideligo/secondbrain-gateway/internal/client"
+	"github.com/fideligo/secondbrain-gateway/internal/database"
 	"github.com/fideligo/secondbrain-gateway/internal/handler"
 	"github.com/fideligo/secondbrain-gateway/proto"
-	"github.com/fideligo/secondbrain-gateway/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -46,6 +46,7 @@ func main() {
 		c.JSON(200, gin.H{"message": "Gateway Running!"})
 	})
 	router.POST("/api/upload", apiHandler.UploadDocument)
+	router.POST("/api/chat", apiHandler.Chat)
 
 	fmt.Println("🚀 Gateway starting on port :8080...")
 	router.Run(":8080")

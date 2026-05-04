@@ -33,3 +33,19 @@ func (b *BrainClient) ProcessDocument(fileName, author string, content []byte) (
 
 	return b.grpcClient.ProcessDocument(ctx, req)
 }
+
+func (c *BrainClient) Chat(query string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*300) // AI butuh waktu berpikir
+	defer cancel()
+
+	req := &proto.ChatRequest{
+		Query: query,
+	}
+
+	res, err := c.grpcClient.Chat(ctx, req)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Answer, nil
+}

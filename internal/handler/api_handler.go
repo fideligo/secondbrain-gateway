@@ -103,4 +103,28 @@ func (h *APIHandler) UploadDocument(c *gin.Context) {
 		"document_id": newDoc.ID,
 		"ai_response": response,
 	})
+
+}
+
+func (h *APIHandler) Chat(c *gin.Context) {
+	var req struct {
+		Query string `json:"query"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+	
+	answer, err := h.brainClient.Chat(req.Query)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	
+	c.JSON(http.StatusOK, gin.H{
+		"answer": answer,
+	})
 }
