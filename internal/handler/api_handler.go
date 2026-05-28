@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"fmt"
 
 	"github.com/fideligo/secondbrain-gateway/internal/client"
 	"github.com/fideligo/secondbrain-gateway/internal/model"
@@ -128,3 +129,49 @@ func (h *APIHandler) Chat(c *gin.Context) {
 		"answer": answer,
 	})
 }
+
+func (h *APIHandler) GetDocuments(c *gin.Context) {
+	var docs []model.Document
+
+	if result := h.db.Order("uploaded_at desc").Find(&docs); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to fetch documents",
+			"details": result.Error.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success retrieving documents",
+		"data": docs,
+	})
+}
+
+func (h *APIHandler) DeleteDocument(c *gin.Context) {
+    id := c.Param("id")
+    var doc model.Document
+
+    if result := h.db.First(&doc, id); result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{
+            "error": "Document not found",
+        })
+        return
+    }
+
+    err := os.Remove(doc.FilePath)
+    if err != nil {
+        fmt.Printf("Warning: Failed to delete physical file %s: %v\n", doc.FilePath, err)
+    }
+
+    if result := h.db.Delete(&doc); result.Error != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{
+            "error": "Failed to delete from database",
+        })
+        return 
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "message": fmt.Sprintf("Document with ID %s successfully deleted", id),
+    })
+}
+

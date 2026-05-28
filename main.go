@@ -38,7 +38,7 @@ func main() {
 	
 	apiHandler := handler.NewAPIHandler(brainClient, db)
 
-	// 3. BUKA TOKO (Router)
+	// Router
 	router := gin.Default()
 	
 	// Daftarkan fungsi milik si Kasir ke jalur HTTP
@@ -47,6 +47,9 @@ func main() {
 	})
 	router.POST("/api/upload", apiHandler.UploadDocument)
 	router.POST("/api/chat", apiHandler.Chat)
+
+	router.GET("/api/documents", apiHandler.GetDocuments)
+	router.DELETE("/api/documents/:id", apiHandler.DeleteDocument)
 
 	fmt.Println("🚀 Gateway starting on port :8080...")
 	router.Run(":8080")
