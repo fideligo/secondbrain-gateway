@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"github.com/gin-contrib/cors"
 )
 
 type DocumentRequestJSON struct {
@@ -40,6 +41,14 @@ func main() {
 
 	// Router
 	router := gin.Default()
+	
+	router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+    }))
 	
 	// Daftarkan fungsi milik si Kasir ke jalur HTTP
 	router.GET("/api/health", func(c *gin.Context) {
