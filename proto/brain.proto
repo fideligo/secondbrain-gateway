@@ -24,10 +24,16 @@ message DocumentResponse {
   string document_id = 3;
 }
 
-message ChatRequest {
-  string query = 1; // question
-}
-
 message ChatResponse {
   string answer = 1;
+}
+
+message ChatMessage {
+  string role = 1;
+  string content = 2;
+}
+
+message ChatRequest {
+  string query = 1;
+  repeated ChatMessage history = 2;
 }

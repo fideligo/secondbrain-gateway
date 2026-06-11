@@ -143,50 +143,6 @@ func (x *DocumentResponse) GetDocumentId() string {
 	return ""
 }
 
-type ChatRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"` // question
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ChatRequest) Reset() {
-	*x = ChatRequest{}
-	mi := &file_proto_brain_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatRequest) ProtoMessage() {}
-
-func (x *ChatRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatRequest.ProtoReflect.Descriptor instead.
-func (*ChatRequest) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ChatRequest) GetQuery() string {
-	if x != nil {
-		return x.Query
-	}
-	return ""
-}
-
 type ChatResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Answer        string                 `protobuf:"bytes,1,opt,name=answer,proto3" json:"answer,omitempty"`
@@ -196,7 +152,7 @@ type ChatResponse struct {
 
 func (x *ChatResponse) Reset() {
 	*x = ChatResponse{}
-	mi := &file_proto_brain_proto_msgTypes[3]
+	mi := &file_proto_brain_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -208,7 +164,7 @@ func (x *ChatResponse) String() string {
 func (*ChatResponse) ProtoMessage() {}
 
 func (x *ChatResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[3]
+	mi := &file_proto_brain_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -221,7 +177,7 @@ func (x *ChatResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatResponse.ProtoReflect.Descriptor instead.
 func (*ChatResponse) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{3}
+	return file_proto_brain_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ChatResponse) GetAnswer() string {
@@ -229,6 +185,110 @@ func (x *ChatResponse) GetAnswer() string {
 		return x.Answer
 	}
 	return ""
+}
+
+type ChatMessage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Role          string                 `protobuf:"bytes,1,opt,name=role,proto3" json:"role,omitempty"`
+	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatMessage) Reset() {
+	*x = ChatMessage{}
+	mi := &file_proto_brain_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatMessage) ProtoMessage() {}
+
+func (x *ChatMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_brain_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
+func (*ChatMessage) Descriptor() ([]byte, []int) {
+	return file_proto_brain_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ChatMessage) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *ChatMessage) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type ChatRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	History       []*ChatMessage         `protobuf:"bytes,2,rep,name=history,proto3" json:"history,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatRequest) Reset() {
+	*x = ChatRequest{}
+	mi := &file_proto_brain_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatRequest) ProtoMessage() {}
+
+func (x *ChatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_brain_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatRequest.ProtoReflect.Descriptor instead.
+func (*ChatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_brain_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ChatRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+func (x *ChatRequest) GetHistory() []*ChatMessage {
+	if x != nil {
+		return x.History
+	}
+	return nil
 }
 
 var File_proto_brain_proto protoreflect.FileDescriptor
@@ -244,11 +304,15 @@ const file_proto_brain_proto_rawDesc = "" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1f\n" +
 	"\vdocument_id\x18\x03 \x01(\tR\n" +
-	"documentId\"#\n" +
-	"\vChatRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\"&\n" +
+	"documentId\"&\n" +
 	"\fChatResponse\x12\x16\n" +
-	"\x06answer\x18\x01 \x01(\tR\x06answer2\x83\x01\n" +
+	"\x06answer\x18\x01 \x01(\tR\x06answer\";\n" +
+	"\vChatMessage\x12\x12\n" +
+	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\"Q\n" +
+	"\vChatRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\x12,\n" +
+	"\ahistory\x18\x02 \x03(\v2\x12.brain.ChatMessageR\ahistory2\x83\x01\n" +
 	"\fBrainService\x12B\n" +
 	"\x0fProcessDocument\x12\x16.brain.DocumentRequest\x1a\x17.brain.DocumentResponse\x12/\n" +
 	"\x04Chat\x12\x12.brain.ChatRequest\x1a\x13.brain.ChatResponseB\tZ\a./protob\x06proto3"
@@ -265,23 +329,25 @@ func file_proto_brain_proto_rawDescGZIP() []byte {
 	return file_proto_brain_proto_rawDescData
 }
 
-var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_brain_proto_goTypes = []any{
 	(*DocumentRequest)(nil),  // 0: brain.DocumentRequest
 	(*DocumentResponse)(nil), // 1: brain.DocumentResponse
-	(*ChatRequest)(nil),      // 2: brain.ChatRequest
-	(*ChatResponse)(nil),     // 3: brain.ChatResponse
+	(*ChatResponse)(nil),     // 2: brain.ChatResponse
+	(*ChatMessage)(nil),      // 3: brain.ChatMessage
+	(*ChatRequest)(nil),      // 4: brain.ChatRequest
 }
 var file_proto_brain_proto_depIdxs = []int32{
-	0, // 0: brain.BrainService.ProcessDocument:input_type -> brain.DocumentRequest
-	2, // 1: brain.BrainService.Chat:input_type -> brain.ChatRequest
-	1, // 2: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
-	3, // 3: brain.BrainService.Chat:output_type -> brain.ChatResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: brain.ChatRequest.history:type_name -> brain.ChatMessage
+	0, // 1: brain.BrainService.ProcessDocument:input_type -> brain.DocumentRequest
+	4, // 2: brain.BrainService.Chat:input_type -> brain.ChatRequest
+	1, // 3: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
+	2, // 4: brain.BrainService.Chat:output_type -> brain.ChatResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_brain_proto_init() }
@@ -295,7 +361,7 @@ func file_proto_brain_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_brain_proto_rawDesc), len(file_proto_brain_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
