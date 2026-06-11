@@ -110,6 +110,7 @@ func (h *APIHandler) UploadDocument(c *gin.Context) {
 func (h *APIHandler) Chat(c *gin.Context) {
 	var req struct {
 		Query string `json:"query"`
+		History []client.MessageHistory `json:"history"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -119,7 +120,8 @@ func (h *APIHandler) Chat(c *gin.Context) {
 		return
 	}
 	
-	answer, err := h.brainClient.Chat(req.Query)
+	answer, err := h.brainClient.Chat(req.Query, req.History)
+	
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

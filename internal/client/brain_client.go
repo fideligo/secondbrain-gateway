@@ -12,6 +12,11 @@ type BrainClient struct {
 	grpcClient proto.BrainServiceClient
 }
 
+type MessageHistory struct {
+	Role string
+	Content string
+}
+
 // NewBrainClient (constructor)
 func NewBrainClient(grpcClient proto.BrainServiceClient) *BrainClient {
 	return &BrainClient{
@@ -34,12 +39,21 @@ func (b *BrainClient) ProcessDocument(fileName, author string, content []byte) (
 	return b.grpcClient.ProcessDocument(ctx, req)
 }
 
-func (c *BrainClient) Chat(query string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*300) // AI butuh waktu berpikir
+func (c *BrainClient) Chat(query string, history []MessageHistory) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*300)
 	defer cancel()
+
+	var protoHistory []*proto.ChatMessage
+	for _, msg := range history {
+		protoHistory = append(protoHistory, &proto.ChatMessage{
+			Role: msg.Role,
+			Content: msg.Content,
+		})
+	}
 
 	req := &proto.ChatRequest{
 		Query: query,
+		History: protoHistory,
 	}
 
 	res, err := c.grpcClient.Chat(ctx, req)
