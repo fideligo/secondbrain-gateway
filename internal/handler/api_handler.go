@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
-	"fmt"
 
 	"github.com/fideligo/secondbrain-gateway/internal/client"
 	"github.com/fideligo/secondbrain-gateway/internal/model"
@@ -177,3 +177,60 @@ func (h *APIHandler) DeleteDocument(c *gin.Context) {
     })
 }
 
+func (h *APIHandler) UploadNote(c *gin.Context) {
+	var req struct {
+		Title   string `json:"title"`
+		Content string `json:"content"`
+		Author  string `json:"author"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON format"})
+		return
+	}
+
+	if req.Content == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Note content cannot be empty"})
+		return
+	}
+
+	if req.Author == "" {
+		req.Author = "Fide"
+	}
+
+	displayTitle := req.Title
+	if displayTitle == "" {
+		displayTitle = fmt.Sprintf("QuickNote - %s", time.Now().Format("02 Jan 2006, 15:04"))
+	}
+
+	response, err := h.brainClient.ProcessNote(req.Title, req.Author, req.Content)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "AI Engine failed to process note",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	newDoc := model.Document{
+		FileName:   displayTitle,
+		Author:     req.Author,
+		FilePath:   "Virtual-Note",
+		Summary:    req.Content,
+		UploadedAt: time.Now(),
+	}
+
+	if result := h.db.Create(&newDoc); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to save note to database",
+			"details": result.Error.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "Note successfully saved",
+		"document_id": newDoc.ID,
+		"ai_response": response,
+	})
+}

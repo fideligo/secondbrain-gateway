@@ -7,7 +7,6 @@ import (
 	"github.com/fideligo/secondbrain-gateway/proto"
 )
 
-// pembungkus untuk layanan gRPC
 type BrainClient struct {
 	grpcClient proto.BrainServiceClient
 }
@@ -24,7 +23,6 @@ func NewBrainClient(grpcClient proto.BrainServiceClient) *BrainClient {
 	}
 }
 
-// ProcessDocument
 func (b *BrainClient) ProcessDocument(fileName, author string, content []byte) (*proto.DocumentResponse, error) {
 
 	req := &proto.DocumentRequest{
@@ -63,3 +61,17 @@ func (c *BrainClient) Chat(query string, history []MessageHistory) (string, erro
 
 	return res.Answer, nil
 }
+
+func (b *BrainClient) ProcessNote(title, author, content string) (*proto.DocumentResponse, error) {
+	req := &proto.NoteRequest{
+		Title:   title,
+		Author:  author,
+		Content: content,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	return b.grpcClient.ProcessNote(ctx, req)
+}
+

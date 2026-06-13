@@ -55,6 +55,7 @@ func main() {
 		c.JSON(200, gin.H{"message": "Gateway Running!"})
 	})
 	router.POST("/api/upload", apiHandler.UploadDocument)
+	router.POST("/api/notes", apiHandler.UploadNote)
 	router.POST("/api/chat", apiHandler.Chat)
 
 	router.GET("/api/documents", apiHandler.GetDocuments)
