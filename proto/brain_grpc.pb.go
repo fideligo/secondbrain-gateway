@@ -21,15 +21,16 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	BrainService_ProcessDocument_FullMethodName = "/brain.BrainService/ProcessDocument"
 	BrainService_Chat_FullMethodName            = "/brain.BrainService/Chat"
+	BrainService_ProcessNote_FullMethodName     = "/brain.BrainService/ProcessNote"
 )
 
 // BrainServiceClient is the client API for BrainService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BrainServiceClient interface {
-	// Go akan memanggil fungsi ini, mengirim dokumen, lalu Python membalas statusnya
 	ProcessDocument(ctx context.Context, in *DocumentRequest, opts ...grpc.CallOption) (*DocumentResponse, error)
 	Chat(ctx context.Context, in *ChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	ProcessNote(ctx context.Context, in *NoteRequest, opts ...grpc.CallOption) (*DocumentResponse, error)
 }
 
 type brainServiceClient struct {
@@ -60,13 +61,23 @@ func (c *brainServiceClient) Chat(ctx context.Context, in *ChatRequest, opts ...
 	return out, nil
 }
 
+func (c *brainServiceClient) ProcessNote(ctx context.Context, in *NoteRequest, opts ...grpc.CallOption) (*DocumentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DocumentResponse)
+	err := c.cc.Invoke(ctx, BrainService_ProcessNote_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BrainServiceServer is the server API for BrainService service.
 // All implementations must embed UnimplementedBrainServiceServer
 // for forward compatibility.
 type BrainServiceServer interface {
-	// Go akan memanggil fungsi ini, mengirim dokumen, lalu Python membalas statusnya
 	ProcessDocument(context.Context, *DocumentRequest) (*DocumentResponse, error)
 	Chat(context.Context, *ChatRequest) (*ChatResponse, error)
+	ProcessNote(context.Context, *NoteRequest) (*DocumentResponse, error)
 	mustEmbedUnimplementedBrainServiceServer()
 }
 
@@ -82,6 +93,9 @@ func (UnimplementedBrainServiceServer) ProcessDocument(context.Context, *Documen
 }
 func (UnimplementedBrainServiceServer) Chat(context.Context, *ChatRequest) (*ChatResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Chat not implemented")
+}
+func (UnimplementedBrainServiceServer) ProcessNote(context.Context, *NoteRequest) (*DocumentResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ProcessNote not implemented")
 }
 func (UnimplementedBrainServiceServer) mustEmbedUnimplementedBrainServiceServer() {}
 func (UnimplementedBrainServiceServer) testEmbeddedByValue()                      {}
@@ -140,6 +154,24 @@ func _BrainService_Chat_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BrainService_ProcessNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrainServiceServer).ProcessNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BrainService_ProcessNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrainServiceServer).ProcessNote(ctx, req.(*NoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BrainService_ServiceDesc is the grpc.ServiceDesc for BrainService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +186,10 @@ var BrainService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Chat",
 			Handler:    _BrainService_Chat_Handler,
+		},
+		{
+			MethodName: "ProcessNote",
+			Handler:    _BrainService_ProcessNote_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

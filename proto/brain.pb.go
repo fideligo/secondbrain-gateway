@@ -21,7 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Data yang dikirim dari Go ke Python
 type DocumentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	FileName      string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
@@ -82,7 +81,66 @@ func (x *DocumentRequest) GetContent() []byte {
 	return nil
 }
 
-// Data balasan dari Python ke Go
+type NoteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Author        string                 `protobuf:"bytes,2,opt,name=author,proto3" json:"author,omitempty"`
+	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NoteRequest) Reset() {
+	*x = NoteRequest{}
+	mi := &file_proto_brain_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NoteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NoteRequest) ProtoMessage() {}
+
+func (x *NoteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_brain_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NoteRequest.ProtoReflect.Descriptor instead.
+func (*NoteRequest) Descriptor() ([]byte, []int) {
+	return file_proto_brain_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *NoteRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *NoteRequest) GetAuthor() string {
+	if x != nil {
+		return x.Author
+	}
+	return ""
+}
+
+func (x *NoteRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
 type DocumentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
@@ -94,7 +152,7 @@ type DocumentResponse struct {
 
 func (x *DocumentResponse) Reset() {
 	*x = DocumentResponse{}
-	mi := &file_proto_brain_proto_msgTypes[1]
+	mi := &file_proto_brain_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -106,7 +164,7 @@ func (x *DocumentResponse) String() string {
 func (*DocumentResponse) ProtoMessage() {}
 
 func (x *DocumentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[1]
+	mi := &file_proto_brain_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -119,7 +177,7 @@ func (x *DocumentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DocumentResponse.ProtoReflect.Descriptor instead.
 func (*DocumentResponse) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{1}
+	return file_proto_brain_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DocumentResponse) GetSuccess() bool {
@@ -152,7 +210,7 @@ type ChatResponse struct {
 
 func (x *ChatResponse) Reset() {
 	*x = ChatResponse{}
-	mi := &file_proto_brain_proto_msgTypes[2]
+	mi := &file_proto_brain_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -164,7 +222,7 @@ func (x *ChatResponse) String() string {
 func (*ChatResponse) ProtoMessage() {}
 
 func (x *ChatResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[2]
+	mi := &file_proto_brain_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +235,7 @@ func (x *ChatResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatResponse.ProtoReflect.Descriptor instead.
 func (*ChatResponse) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{2}
+	return file_proto_brain_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ChatResponse) GetAnswer() string {
@@ -197,7 +255,7 @@ type ChatMessage struct {
 
 func (x *ChatMessage) Reset() {
 	*x = ChatMessage{}
-	mi := &file_proto_brain_proto_msgTypes[3]
+	mi := &file_proto_brain_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -209,7 +267,7 @@ func (x *ChatMessage) String() string {
 func (*ChatMessage) ProtoMessage() {}
 
 func (x *ChatMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[3]
+	mi := &file_proto_brain_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -222,7 +280,7 @@ func (x *ChatMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
 func (*ChatMessage) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{3}
+	return file_proto_brain_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ChatMessage) GetRole() string {
@@ -249,7 +307,7 @@ type ChatRequest struct {
 
 func (x *ChatRequest) Reset() {
 	*x = ChatRequest{}
-	mi := &file_proto_brain_proto_msgTypes[4]
+	mi := &file_proto_brain_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -261,7 +319,7 @@ func (x *ChatRequest) String() string {
 func (*ChatRequest) ProtoMessage() {}
 
 func (x *ChatRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_brain_proto_msgTypes[4]
+	mi := &file_proto_brain_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -274,7 +332,7 @@ func (x *ChatRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatRequest.ProtoReflect.Descriptor instead.
 func (*ChatRequest) Descriptor() ([]byte, []int) {
-	return file_proto_brain_proto_rawDescGZIP(), []int{4}
+	return file_proto_brain_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ChatRequest) GetQuery() string {
@@ -299,7 +357,11 @@ const file_proto_brain_proto_rawDesc = "" +
 	"\x0fDocumentRequest\x12\x1b\n" +
 	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12\x16\n" +
 	"\x06author\x18\x02 \x01(\tR\x06author\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\fR\acontent\"g\n" +
+	"\acontent\x18\x03 \x01(\fR\acontent\"U\n" +
+	"\vNoteRequest\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12\x16\n" +
+	"\x06author\x18\x02 \x01(\tR\x06author\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\"g\n" +
 	"\x10DocumentResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1f\n" +
@@ -312,10 +374,11 @@ const file_proto_brain_proto_rawDesc = "" +
 	"\acontent\x18\x02 \x01(\tR\acontent\"Q\n" +
 	"\vChatRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12,\n" +
-	"\ahistory\x18\x02 \x03(\v2\x12.brain.ChatMessageR\ahistory2\x83\x01\n" +
+	"\ahistory\x18\x02 \x03(\v2\x12.brain.ChatMessageR\ahistory2\xbf\x01\n" +
 	"\fBrainService\x12B\n" +
 	"\x0fProcessDocument\x12\x16.brain.DocumentRequest\x1a\x17.brain.DocumentResponse\x12/\n" +
-	"\x04Chat\x12\x12.brain.ChatRequest\x1a\x13.brain.ChatResponseB\tZ\a./protob\x06proto3"
+	"\x04Chat\x12\x12.brain.ChatRequest\x1a\x13.brain.ChatResponse\x12:\n" +
+	"\vProcessNote\x12\x12.brain.NoteRequest\x1a\x17.brain.DocumentResponseB\tZ\a./protob\x06proto3"
 
 var (
 	file_proto_brain_proto_rawDescOnce sync.Once
@@ -329,22 +392,25 @@ func file_proto_brain_proto_rawDescGZIP() []byte {
 	return file_proto_brain_proto_rawDescData
 }
 
-var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_brain_proto_goTypes = []any{
 	(*DocumentRequest)(nil),  // 0: brain.DocumentRequest
-	(*DocumentResponse)(nil), // 1: brain.DocumentResponse
-	(*ChatResponse)(nil),     // 2: brain.ChatResponse
-	(*ChatMessage)(nil),      // 3: brain.ChatMessage
-	(*ChatRequest)(nil),      // 4: brain.ChatRequest
+	(*NoteRequest)(nil),      // 1: brain.NoteRequest
+	(*DocumentResponse)(nil), // 2: brain.DocumentResponse
+	(*ChatResponse)(nil),     // 3: brain.ChatResponse
+	(*ChatMessage)(nil),      // 4: brain.ChatMessage
+	(*ChatRequest)(nil),      // 5: brain.ChatRequest
 }
 var file_proto_brain_proto_depIdxs = []int32{
-	3, // 0: brain.ChatRequest.history:type_name -> brain.ChatMessage
+	4, // 0: brain.ChatRequest.history:type_name -> brain.ChatMessage
 	0, // 1: brain.BrainService.ProcessDocument:input_type -> brain.DocumentRequest
-	4, // 2: brain.BrainService.Chat:input_type -> brain.ChatRequest
-	1, // 3: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
-	2, // 4: brain.BrainService.Chat:output_type -> brain.ChatResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	5, // 2: brain.BrainService.Chat:input_type -> brain.ChatRequest
+	1, // 3: brain.BrainService.ProcessNote:input_type -> brain.NoteRequest
+	2, // 4: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
+	3, // 5: brain.BrainService.Chat:output_type -> brain.ChatResponse
+	2, // 6: brain.BrainService.ProcessNote:output_type -> brain.DocumentResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -361,7 +427,7 @@ func file_proto_brain_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_brain_proto_rawDesc), len(file_proto_brain_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
