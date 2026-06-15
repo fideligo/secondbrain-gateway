@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/fideligo/secondbrain-gateway/internal/client"
 	"github.com/fideligo/secondbrain-gateway/internal/database"
@@ -24,10 +25,14 @@ func main() {
 
 	db := database.InitDB()
 
-	fmt.Println("⏳ Connecting to Python AI Engine on port :50051...")
-	// localhost:50051 if gemini
-	// http://localhost:11434 if llama
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// Get gRPC URL from environment variable, fallback to localhost if not set
+	brainServiceURL := os.Getenv("BRAIN_SERVICE_URL")
+	if brainServiceURL == "" {
+		brainServiceURL = "localhost:50051"
+	}
+
+	fmt.Printf("⏳ Connecting to Python AI Engine at %s...\n", brainServiceURL)
+	conn, err := grpc.NewClient(brainServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC server : %v", err)
 	}
