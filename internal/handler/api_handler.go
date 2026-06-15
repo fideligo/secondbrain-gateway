@@ -150,31 +150,43 @@ func (h *APIHandler) GetDocuments(c *gin.Context) {
 }
 
 func (h *APIHandler) DeleteDocument(c *gin.Context) {
-    id := c.Param("id")
-    var doc model.Document
+	id := c.Param("id")
+	var doc model.Document
 
-    if result := h.db.First(&doc, id); result.Error != nil {
-        c.JSON(http.StatusNotFound, gin.H{
-            "error": "Document not found",
-        })
-        return
-    }
+	if result := h.db.First(&doc, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Document not found",
+		})
+		return
+	}
 
-    err := os.Remove(doc.FilePath)
-    if err != nil {
-        fmt.Printf("Warning: Failed to delete physical file %s: %v\n", doc.FilePath, err)
-    }
+	sourceName := doc.FileName
+	if doc.FilePath == "Virtual-Note" {
+		sourceName = "Note: " + doc.FileName
+	}
 
-    if result := h.db.Delete(&doc); result.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{
-            "error": "Failed to delete from database",
-        })
-        return 
-    }
+	_, err := h.brainClient.DeleteMemory(sourceName)
+	if err != nil {
+		fmt.Printf("Warning: Failed to delete vector memory in AI for %s: %v\n", sourceName, err)
+	}
 
-    c.JSON(http.StatusOK, gin.H{
-        "message": fmt.Sprintf("Document with ID %s successfully deleted", id),
-    })
+	if doc.FilePath != "Virtual-Note" {
+		err = os.Remove(doc.FilePath)
+		if err != nil {
+			fmt.Printf("Warning: Failed to delete physical file %s: %v\n", doc.FilePath, err)
+		}
+	}
+
+	if result := h.db.Delete(&doc); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to delete from database",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("Document '%s' and all its memories have been permanently deleted", doc.FileName),
+	})
 }
 
 func (h *APIHandler) UploadNote(c *gin.Context) {

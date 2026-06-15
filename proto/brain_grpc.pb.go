@@ -22,6 +22,7 @@ const (
 	BrainService_ProcessDocument_FullMethodName = "/brain.BrainService/ProcessDocument"
 	BrainService_Chat_FullMethodName            = "/brain.BrainService/Chat"
 	BrainService_ProcessNote_FullMethodName     = "/brain.BrainService/ProcessNote"
+	BrainService_DeleteMemory_FullMethodName    = "/brain.BrainService/DeleteMemory"
 )
 
 // BrainServiceClient is the client API for BrainService service.
@@ -31,6 +32,7 @@ type BrainServiceClient interface {
 	ProcessDocument(ctx context.Context, in *DocumentRequest, opts ...grpc.CallOption) (*DocumentResponse, error)
 	Chat(ctx context.Context, in *ChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 	ProcessNote(ctx context.Context, in *NoteRequest, opts ...grpc.CallOption) (*DocumentResponse, error)
+	DeleteMemory(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
 
 type brainServiceClient struct {
@@ -71,6 +73,16 @@ func (c *brainServiceClient) ProcessNote(ctx context.Context, in *NoteRequest, o
 	return out, nil
 }
 
+func (c *brainServiceClient) DeleteMemory(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, BrainService_DeleteMemory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BrainServiceServer is the server API for BrainService service.
 // All implementations must embed UnimplementedBrainServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type BrainServiceServer interface {
 	ProcessDocument(context.Context, *DocumentRequest) (*DocumentResponse, error)
 	Chat(context.Context, *ChatRequest) (*ChatResponse, error)
 	ProcessNote(context.Context, *NoteRequest) (*DocumentResponse, error)
+	DeleteMemory(context.Context, *DeleteRequest) (*DeleteResponse, error)
 	mustEmbedUnimplementedBrainServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedBrainServiceServer) Chat(context.Context, *ChatRequest) (*Cha
 }
 func (UnimplementedBrainServiceServer) ProcessNote(context.Context, *NoteRequest) (*DocumentResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ProcessNote not implemented")
+}
+func (UnimplementedBrainServiceServer) DeleteMemory(context.Context, *DeleteRequest) (*DeleteResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteMemory not implemented")
 }
 func (UnimplementedBrainServiceServer) mustEmbedUnimplementedBrainServiceServer() {}
 func (UnimplementedBrainServiceServer) testEmbeddedByValue()                      {}
@@ -172,6 +188,24 @@ func _BrainService_ProcessNote_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BrainService_DeleteMemory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrainServiceServer).DeleteMemory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BrainService_DeleteMemory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrainServiceServer).DeleteMemory(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BrainService_ServiceDesc is the grpc.ServiceDesc for BrainService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var BrainService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProcessNote",
 			Handler:    _BrainService_ProcessNote_Handler,
+		},
+		{
+			MethodName: "DeleteMemory",
+			Handler:    _BrainService_DeleteMemory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -75,3 +75,13 @@ func (b *BrainClient) ProcessNote(title, author, content string) (*proto.Documen
 	return b.grpcClient.ProcessNote(ctx, req)
 }
 
+func (b *BrainClient) DeleteMemory(sourceName string) (*proto.DeleteResponse, error) {
+	req := &proto.DeleteRequest{
+		SourceName: sourceName,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	return b.grpcClient.DeleteMemory(ctx, req)
+}

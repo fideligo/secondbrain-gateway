@@ -349,6 +349,102 @@ func (x *ChatRequest) GetHistory() []*ChatMessage {
 	return nil
 }
 
+type DeleteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SourceName    string                 `protobuf:"bytes,1,opt,name=source_name,json=sourceName,proto3" json:"source_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteRequest) Reset() {
+	*x = DeleteRequest{}
+	mi := &file_proto_brain_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRequest) ProtoMessage() {}
+
+func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_brain_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
+func (*DeleteRequest) Descriptor() ([]byte, []int) {
+	return file_proto_brain_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteRequest) GetSourceName() string {
+	if x != nil {
+		return x.SourceName
+	}
+	return ""
+}
+
+type DeleteResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteResponse) Reset() {
+	*x = DeleteResponse{}
+	mi := &file_proto_brain_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteResponse) ProtoMessage() {}
+
+func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_brain_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
+func (*DeleteResponse) Descriptor() ([]byte, []int) {
+	return file_proto_brain_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeleteResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DeleteResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_proto_brain_proto protoreflect.FileDescriptor
 
 const file_proto_brain_proto_rawDesc = "" +
@@ -374,11 +470,18 @@ const file_proto_brain_proto_rawDesc = "" +
 	"\acontent\x18\x02 \x01(\tR\acontent\"Q\n" +
 	"\vChatRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12,\n" +
-	"\ahistory\x18\x02 \x03(\v2\x12.brain.ChatMessageR\ahistory2\xbf\x01\n" +
+	"\ahistory\x18\x02 \x03(\v2\x12.brain.ChatMessageR\ahistory\"0\n" +
+	"\rDeleteRequest\x12\x1f\n" +
+	"\vsource_name\x18\x01 \x01(\tR\n" +
+	"sourceName\"D\n" +
+	"\x0eDeleteResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xfc\x01\n" +
 	"\fBrainService\x12B\n" +
 	"\x0fProcessDocument\x12\x16.brain.DocumentRequest\x1a\x17.brain.DocumentResponse\x12/\n" +
 	"\x04Chat\x12\x12.brain.ChatRequest\x1a\x13.brain.ChatResponse\x12:\n" +
-	"\vProcessNote\x12\x12.brain.NoteRequest\x1a\x17.brain.DocumentResponseB\tZ\a./protob\x06proto3"
+	"\vProcessNote\x12\x12.brain.NoteRequest\x1a\x17.brain.DocumentResponse\x12;\n" +
+	"\fDeleteMemory\x12\x14.brain.DeleteRequest\x1a\x15.brain.DeleteResponseB\tZ\a./protob\x06proto3"
 
 var (
 	file_proto_brain_proto_rawDescOnce sync.Once
@@ -392,7 +495,7 @@ func file_proto_brain_proto_rawDescGZIP() []byte {
 	return file_proto_brain_proto_rawDescData
 }
 
-var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_brain_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_brain_proto_goTypes = []any{
 	(*DocumentRequest)(nil),  // 0: brain.DocumentRequest
 	(*NoteRequest)(nil),      // 1: brain.NoteRequest
@@ -400,17 +503,21 @@ var file_proto_brain_proto_goTypes = []any{
 	(*ChatResponse)(nil),     // 3: brain.ChatResponse
 	(*ChatMessage)(nil),      // 4: brain.ChatMessage
 	(*ChatRequest)(nil),      // 5: brain.ChatRequest
+	(*DeleteRequest)(nil),    // 6: brain.DeleteRequest
+	(*DeleteResponse)(nil),   // 7: brain.DeleteResponse
 }
 var file_proto_brain_proto_depIdxs = []int32{
 	4, // 0: brain.ChatRequest.history:type_name -> brain.ChatMessage
 	0, // 1: brain.BrainService.ProcessDocument:input_type -> brain.DocumentRequest
 	5, // 2: brain.BrainService.Chat:input_type -> brain.ChatRequest
 	1, // 3: brain.BrainService.ProcessNote:input_type -> brain.NoteRequest
-	2, // 4: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
-	3, // 5: brain.BrainService.Chat:output_type -> brain.ChatResponse
-	2, // 6: brain.BrainService.ProcessNote:output_type -> brain.DocumentResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	6, // 4: brain.BrainService.DeleteMemory:input_type -> brain.DeleteRequest
+	2, // 5: brain.BrainService.ProcessDocument:output_type -> brain.DocumentResponse
+	3, // 6: brain.BrainService.Chat:output_type -> brain.ChatResponse
+	2, // 7: brain.BrainService.ProcessNote:output_type -> brain.DocumentResponse
+	7, // 8: brain.BrainService.DeleteMemory:output_type -> brain.DeleteResponse
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -427,7 +534,7 @@ func file_proto_brain_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_brain_proto_rawDesc), len(file_proto_brain_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
